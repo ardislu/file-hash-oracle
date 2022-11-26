@@ -76,10 +76,12 @@ $ sha256sum baby.gif
 5657105bcd9eee10b2330f8e1325284435d92028897b589bea7bba66bd3c3c24  baby.gif
 ```
 
-Then send a call to a JSON-RPC endpoint to verify the hash:
+Then send a call to a JSON-RPC endpoint to talk to the [smart contract deployed on Sepolia](https://sepolia.etherscan.io/address/0x50469b0edb169DC779786cC87EE6E09bA1D224CB)...
+
+Using the [Etherscan UI](https://sepolia.etherscan.io/address/0x50469b0edb169DC779786cC87EE6E09bA1D224CB#readContract), or manually using JavaScript:
 
 ```javascript
-await fetch('https://cloudflare-eth.com', { // Replace with any JSON-RPC endpoint
+await fetch('https://eth.ardis.lu/v1/sepolia', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -90,7 +92,7 @@ await fetch('https://cloudflare-eth.com', { // Replace with any JSON-RPC endpoin
     method: 'eth_call',
     params: [
       {
-        to: '0x000...000', // Replace with the deployed smart contract
+        to: '0x50469b0edb169DC779786cC87EE6E09bA1D224CB',
         data: '0x6a9385675657105bcd9eee10b2330f8e1325284435d92028897b589bea7bba66bd3c3c24' // 6a938567 = function byte signature for isValid(bytes32)
       },
       'latest'
@@ -98,5 +100,6 @@ await fetch('https://cloudflare-eth.com', { // Replace with any JSON-RPC endpoin
   })
 })
   .then(r => r.json())
-  .then(console.log);
+  .then(obj => obj['result'])
+  .then(result => Boolean(parseInt(result, 16)));
 ```
