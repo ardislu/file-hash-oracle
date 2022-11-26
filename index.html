@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A proof of concept file validator that uses an Ethereum smart contract as the source of truth.">
+  <meta name="theme-color" content="#f2d9e3">
+  <meta property="og:title" content="file-hash-oracle">
+  <meta property="og:description" content="A proof of concept file validator that uses an Ethereum smart contract as the source of truth.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://filehashoracle.ardis.lu/">
+  <link rel="canonical" href="https://filehashoracle.ardis.lu/">
+  <link rel="icon" href="data:,">
+  <title>file-hash-oracle</title>
+  <style>
+    :root {
+      --primary: hsl(337deg 50% 90%);
+    }
+
+    body {
+      inline-size: min(100% - 32px, 720px);
+      margin-inline: auto;
+      margin-block: 16px;
+      background: var(--primary);
+      font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    form * {
+      inline-size: fit-content;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>file-hash-oracle</h1>
+  </header>
+
+  <main>
+    <p>Here's a file that's valid. You can download it for the next section:</p>
+    <img src="/baby.gif" alt="A short animation of a cartoon baby dancing.">
+
+    <form>
+      <label for="file">Select a file to verify:</label>
+      <input id="file" name="file" type="file">
+
+      <button>Verify file</button>
+
+      <output id="verified" name="verified"></output>
+    </form>
+  </main>
+
+  <footer>
+    <a href="https://github.com/ardislu/file-hash-oracle">GitHub repository</a>
+  </footer>
+
+  <script>
+    const form = document.querySelector('form');
+    const output = document.getElementById('verified');
+    const oracle = '0x50469b0edb169DC779786cC87EE6E09bA1D224CB'; // On Sepolia
+    const functionSignature = '6a938567'; // isValid(bytes32)
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+
+      const file = new FormData(event.target).get('file');
+      const fileBuffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', fileBuffer);
+      const hashArray = new Uint8Array(hashBuffer);
+      const hash = [...hashArray].map(v => v.toString(16).padStart(2, '0')).join('');
+
+      const result = await fetch('https://eth.ardis.lu/v1/sepolia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_call',
+          params: [
+            {
+              to: oracle,
+              data: `0x${functionSignature}${hash}`
+            },
+            'latest'
+          ]
+        })
+      }).then(r => r.json()).then(obj => obj['result']);
+
+      const valid = Boolean(parseInt(result, 16));
+      output.textContent = valid ? '✅ This file is valid!' : '❌ This file is not valid.';
+    });
+  </script>
+</body>
+
+</html>

@@ -56,7 +56,9 @@ await ethereum.request({
 
 ## Using the oracle
 
-First, hash the file...
+You can use the [example frontend](https://filehashoracle.ardis.lu/) to verify files.
+
+Or, you can interact with the smart contract directly. First, hash the file...
 
 Using PowerShell:
 
