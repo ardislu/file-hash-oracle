@@ -6,8 +6,6 @@ By comparing the hash of a file against a trusted source, you can validate that 
 
 This repo contains a proof of concept to use a smart contract on the Ethereum blockchain as the "trusted source" for file hashes.
 
-Original idea from: https://github.com/01-edu/Branch-Blockchain/tree/master/Raid1%20Sign%20Service
-
 ## Static analysis
 
 Install [c4udit](https://github.com/byterocket/c4udit) and [slither](https://github.com/crytic/slither) for static analysis on the smart contract (to catch gas optimizations, best practices, etc.).
@@ -105,3 +103,8 @@ await fetch('https://eth.ardis.lu/v1/sepolia', {
   .then(obj => obj['result'])
   .then(result => Boolean(parseInt(result, 16)));
 ```
+
+## Similar projects
+
+- [Branch Blockchain - Raid 1: Create a signing service](https://github.com/01-edu/Branch-Blockchain/)
+- [Notary](https://etherscan.io/address/0x62700146f115fe08ca37be4a3a91935b28dfbc08#code) (used for [Perpetual Powers of Tau](https://github.com/privacy-scaling-explorations/perpetualpowersoftau))
