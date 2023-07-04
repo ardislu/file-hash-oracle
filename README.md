@@ -29,7 +29,7 @@ Install [Echidna](https://github.com/crytic/echidna) for testing the smart contr
 Run Echidna:
 
 ```
-echidna-test ./contracts/Echidna.sol --contract Echidna --config echidna.yaml
+echidna ./contracts/Echidna.sol --contract Echidna --config echidna.yaml
 ```
 
 ## Deploying
