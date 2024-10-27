@@ -76,7 +76,7 @@
       const hashArray = new Uint8Array(hashBuffer);
       const hash = [...hashArray].map(v => v.toString(16).padStart(2, '0')).join('');
 
-      const result = await fetch('https://eth.ardis.lu/v1/sepolia', {
+      const result = await fetch('https://1rpc.io/sepolia', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
